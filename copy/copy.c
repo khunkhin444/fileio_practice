@@ -5,8 +5,6 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#define max_buf 4098
-
 void usage() {
     fprintf(stderr, "false command\n");
     exit(1);
@@ -37,22 +35,14 @@ int main(int argc, char **argv) {
         fprintf(stderr, "error trying to open, create or read file\nfd_in:\t%d\nfd_out:\t%d\n", fd_in,fd_out);
         exit(1);
     }
-
     fstat(fd_in, &tok);
-
     input_size = tok.st_size; //determinate size of input file
-
     buf = (char*)malloc(sizeof(input_size+1));
     if(buf==NULL) {
         fprintf(stderr, "error trying to allocate buf size\n");
         exit(1);
     }
-
     read_size = read(fd_in, buf, input_size); //*if the input_size is > 4096 then the file is not fully copy
-    if(input_size > max_buf) {
-        fprintf(stderr,"file size is exceed, leftover:%d to copy\n", input_size-max_buf);
-    }
     buf[input_size] = '\0';
-    
     write(fd_out, buf, read_size);
 }
